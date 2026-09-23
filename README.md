@@ -1,5 +1,7 @@
 # Medora
 
+[![CI](https://github.com/mohdsaqb/medora/actions/workflows/ci.yml/badge.svg)](https://github.com/mohdsaqb/medora/actions/workflows/ci.yml)
+
 A hospital records system. Staff register patients, record diagnoses against
 them, and issue prescriptions against each diagnosis.
 
@@ -86,7 +88,8 @@ Starts on <http://localhost:8185>. With Docker running, Spring Boot starts the
 PostgreSQL container from `compose.yml` automatically. To use an existing
 PostgreSQL instead, set `DOCKER_COMPOSE_ENABLED=false` and point `DB_URL` at it.
 
-Hibernate creates the schema on first run. For demo data:
+Hibernate creates the schema on first run. For demo data, 12 patients with
+Indian names and cities, and deliberately fake contact numbers:
 
 ```bash
 psql "postgresql://medora:medora@localhost:5432/medora" -f backend/seed.sql
@@ -178,15 +181,48 @@ required.
 `GET /user/me` returns the signed in username and role. It is how the frontend
 checks credentials, since HTTP Basic has no login endpoint of its own.
 
+### Request rules
+
+Creating a patient requires **name**, **last name** and **phone number**.
+Updating does not: `PUT` merges whatever it receives onto the stored record, so
+a partial payload changes only the fields it contains and leaves the rest alone.
+
+Blank optional fields are stored as null rather than an empty string. `email`
+carries a unique constraint, so without that any second patient saved with an
+empty email would collide with the first.
+
+### Error responses
+
+Errors share one shape, `{"date": ..., "message": ...}`, so a client can always
+show something useful.
+
+| Status | Meaning |
+|---|---|
+| `400` | Required fields missing. The message names them. |
+| `401` | Not signed in, on an endpoint that needs an account |
+| `403` | Signed in, but the role is not allowed |
+| `404` | No matching record |
+| `409` | Conflicts with an existing record, such as a duplicate email |
+
+Stack traces are never returned.
+
 ## Tests
 
 ```bash
-cd backend && ./mvnw verify      # JUnit 5, runs against in-memory H2
+cd backend && ./mvnw verify      # 16 tests, JUnit 5 against in-memory H2
 cd frontend && CI=true npm test  # Jest
 ```
 
-Backend tests cover the patient endpoints and every role rule, including that
-passwords are stored hashed. No database or Docker is needed.
+The backend suite needs no database and no Docker. It covers:
+
+- The patient endpoints, including that anonymous callers can read but not write
+- Every role rule, including that a doctor gets `403` rather than `401` on a
+  delete, which is what distinguishes a wrong role from a missing login
+- That seeded passwords are stored BCrypt hashed, never in plain text
+- That a create without a phone number is rejected, and that an update with a
+  partial payload keeps the fields it left out
+
+CI runs both suites on every push and pull request.
 
 ## Deploying
 
@@ -208,8 +244,13 @@ platform that assigns one.
 
 Honest notes rather than a roadmap.
 
-- **Frontend is dated.** React 16 and Create React App are both end of life. A
-  migration to Vite and React 19 is the largest outstanding piece of work.
+- **Frontend is dated.** React 16 and Create React App are both end of life.
+  Migrating to Vite and React 19 is the largest outstanding piece of work, and
+  it has to happen in one coordinated change: React, both routers, the date
+  picker and the testing library all need major bumps together.
+- **Reads are public.** Any visitor can list patients and their diagnoses. That
+  keeps a deployed demo shareable without credentials, but it is not a setting
+  to carry into anything holding real records.
 - **Basic auth, not tokens.** Credentials are sent on every request and held in
   `sessionStorage`. Workable over HTTPS at this scope, but JWT is the better fit
   for a real deployment. The role rules would carry over unchanged.
@@ -218,10 +259,13 @@ Honest notes rather than a roadmap.
 - **List endpoints are unbounded.** No pagination yet.
 - **Empty results return 404.** `findAll` treats an empty list as not found
   rather than returning `[]`.
+- **`ProblemService.update` ignores the soft delete flag and creation date** by
+  design, but neither is settable through any other endpoint either.
 - **Six overlapping DTOs.** Named after call sites rather than data, and worth
   consolidating.
-- **Frontend test coverage is one smoke test.**
+- **Frontend test coverage is one smoke test.** The backend is well covered; the
+  React components are not.
 
 ## Licence
 
-MIT.
+MIT. See [LICENSE](LICENSE).
