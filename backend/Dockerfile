@@ -29,4 +29,17 @@ ENV DOCKER_COMPOSE_ENABLED=false
 # application.properties reads.
 EXPOSE 8185
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Tuned for a small single CPU container, where the JVM defaults are a poor
+# fit and startup is slow enough to miss a platform's port scan window.
+#
+#   MaxRAMPercentage   the default heap is a quarter of RAM, which leaves a
+#                      512 MB instance thrashing the collector
+#   UseSerialGC        the parallel collectors cost more than they return
+#                      when there is roughly one core
+#   TieredStopAtLevel  stop at C1, so startup is not spent on JIT compilation
+#                      that only pays off in a long running process
+#   lazy-initialization  builds beans on first use, so the port opens sooner
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k"
+ENV SPRING_MAIN_LAZY_INITIALIZATION=true
+
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]
