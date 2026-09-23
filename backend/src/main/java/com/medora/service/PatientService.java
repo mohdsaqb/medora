@@ -32,37 +32,26 @@ public class PatientService {
 	}
 
 	public List<PatientDto> findAll() throws Exception {
-		try { 
-			// List<Patient> patients = patientRepository.findAllByOrderByPatientidAsc();
-			List<Patient> patients = patientRepository.findAllByStatusEquelsOne();
-			if (patients.size() < 1) {
-				logger.error("There is never patients ");
-				throw new PatientNotFoundException("There is never patient ");
-			}
-			PatientDto[] dtos = modelMapper.map(patients, PatientDto[].class);
-			List<PatientDto> patientDtos = Arrays.asList(dtos);
-			patientDtos.forEach(patient->{
-				patient.getProblems().forEach(problem->{
-					problem.setPId(patient.getPatientid());
-				});
-			});
-			return Arrays.asList(dtos);
-		} catch (PatientNotFoundException e) {
-			// Rethrow as-is. Wrapping it in a plain Exception hid the 404 and
-			// produced a 500 instead.
-			throw e;
+		List<Patient> patients = patientRepository.findAllByStatusEquelsOne();
+		// An empty collection is a valid result, not a missing resource.
+		if (patients.isEmpty()) {
+			return List.of();
 		}
+
+		PatientDto[] dtos = modelMapper.map(patients, PatientDto[].class);
+		List<PatientDto> patientDtos = Arrays.asList(dtos);
+		patientDtos.forEach(patient -> {
+			patient.getProblems().forEach(problem -> problem.setPId(patient.getPatientid()));
+		});
+		return patientDtos;
 	}
 
-	public List<PatientDto> findAllDeletedPatients() { 
-		List<Patient> patients = patientRepository.findAllByStatusEquelsZero(); 
-		if (patients.size() > 0) { 
-			PatientDto[] authorDtos = modelMapper.map(patients, PatientDto[].class);
-			return Arrays.asList(authorDtos);
-		} else {
-			logger.error("There is no deleted patient ");
-			throw new PatientNotFoundException("There is no deleted patient "); 
+	public List<PatientDto> findAllDeletedPatients() {
+		List<Patient> patients = patientRepository.findAllByStatusEquelsZero();
+		if (patients.isEmpty()) {
+			return List.of();
 		}
+		return Arrays.asList(modelMapper.map(patients, PatientDto[].class));
 	}
 
 	public Patient save(Patient patient) {

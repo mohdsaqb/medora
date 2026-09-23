@@ -11,6 +11,14 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    # The frontend is pinned to React 16 on Create React App. Major bumps of
+    # React, the routers, the date picker and the testing library have to land
+    # together as one migration, so individually they only break the build.
+    # Patches and minors are still welcome.
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
 
   - package-ecosystem: "github-actions"
     directory: "/"

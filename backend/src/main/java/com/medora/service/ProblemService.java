@@ -98,14 +98,13 @@ public class ProblemService {
 		return true;
 	}
 
-	public List<ProblemDtoForPatientSingleDto> findAllByPatientid(Long patientid) throws NotFoundException {
+	public List<ProblemDtoForPatientSingleDto> findAllByPatientid(Long patientid) {
 		List<Problem> list = problemRepository.findByPatientidWithStatusOne(patientid);
-		if(list.size()>0) {
-			
-			return Arrays.asList(modelMapper.map(list, ProblemDtoForPatientSingleDto[].class));
+		// A patient with no diagnoses yet is normal, not an error.
+		if (list.isEmpty()) {
+			return List.of();
 		}
-		logger.error("Problem does not exist wtih patientid : " + patientid);
-		throw new NotFoundException("Problem does not exist with patientid : " + patientid);
+		return Arrays.asList(modelMapper.map(list, ProblemDtoForPatientSingleDto[].class));
 	}
 
 }

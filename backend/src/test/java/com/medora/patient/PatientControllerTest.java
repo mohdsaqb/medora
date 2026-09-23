@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
@@ -108,5 +109,17 @@ class PatientControllerTest {
 		// Omitted fields must survive the merge.
 		assertThat(after.getPhoneNo()).isEqualTo("+91 90000 00002");
 		assertThat(after.getStatus()).isEqualTo(1);
+	}
+
+	@Test
+	void aPatientWithNoDiagnosesGetsAnEmptyListNotA404() throws Exception {
+		Patient patient = new Patient("NoProblems", "Patient", "Male", City.KOCHI,
+				"noproblems." + UUID.randomUUID() + "@example.com", 1);
+		patient.setPhoneNo("+91 90000 00003");
+		Patient saved = patientService.save(patient);
+
+		mockMvc.perform(get("/api/problem/find-all-by-patientid/" + saved.getPatientid()))
+				.andExpect(status().isOk())
+				.andExpect(content().json("[]"));
 	}
 }

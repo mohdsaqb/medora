@@ -45,26 +45,21 @@ public class StaffService {
 		}
 	}
 
-	public List<StaffDto> getAll() throws NotFoundException {
+	public List<StaffDto> getAll() {
 		List<Staff> staffs = staffRepository.findAllByStatusEquelsOne();
-		if (staffs.size() > 0) {
-			StaffDto[] staffDtos = modelMapper.map(staffs, StaffDto[].class);
-			return Arrays.asList(staffDtos);
-		} else {
-			logger.error("--There is never Staff");
-			throw new NotFoundException("There is never Staff");
+		// An empty collection is a valid result, not a missing resource.
+		if (staffs.isEmpty()) {
+			return List.of();
 		}
+		return Arrays.asList(modelMapper.map(staffs, StaffDto[].class));
 	}
 
-	public List<StaffDto> getAllDeletedStaff() throws NotFoundException {
+	public List<StaffDto> getAllDeletedStaff() {
 		List<Staff> staffs = staffRepository.findAllByStatusEquelsZero();
-		if (staffs.size() > 0) {
-			StaffDto[] staffDtos = modelMapper.map(staffs, StaffDto[].class);
-			return Arrays.asList(staffDtos);
-		} else {
-			logger.error("--There is never deleted Staff");
-			throw new NotFoundException("There is never deleted Staff");
+		if (staffs.isEmpty()) {
+			return List.of();
 		}
+		return Arrays.asList(modelMapper.map(staffs, StaffDto[].class));
 	}
 
 	public Boolean delete(@Valid Long staffid) throws Exception {
