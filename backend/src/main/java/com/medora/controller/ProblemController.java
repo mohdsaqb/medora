@@ -1,0 +1,65 @@
+package com.medora.controller;
+
+import com.medora.dto.ProblemDto;
+import com.medora.dto.ProblemDtoForPatientSingleDto;
+import com.medora.dto.ProblemGetDto;
+import com.medora.entity.enums.ProblemStatus;
+import com.medora.exception.NotFoundException;
+import com.medora.service.ProblemService;
+import com.medora.util.ApiPaths;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.List;
+
+@RestController
+@RequestMapping(ApiPaths.ProblemCtrl.CTRL)
+public class ProblemController {
+
+	@Autowired
+	ProblemService problemService;
+
+	@GetMapping("/find-by-problemid/{problemid}")
+	public ResponseEntity<ProblemGetDto> getProblem(@PathVariable(name = "problemid", required = true) Long problemid)
+			throws NotFoundException {
+		return ResponseEntity.ok(problemService.findByProblemid(problemid));
+	}
+
+	@GetMapping("/find-all-by-patientid/{patientid}")
+	public ResponseEntity<List<ProblemDtoForPatientSingleDto>> getAllProblem(@PathVariable(name = "patientid", required = true) Long patientid)
+			throws NotFoundException {
+		return ResponseEntity.ok(problemService.findAllByPatientid(patientid));
+	}
+	@PostMapping
+	public ResponseEntity<ProblemDtoForPatientSingleDto> saveProblem(@Valid @RequestBody ProblemDto dto)
+			throws NotFoundException {
+		return ResponseEntity.ok(problemService.save(dto));
+	}
+
+	@PutMapping("/{problemid}")
+	public ResponseEntity<Boolean> updateProblem(@PathVariable(name = "problemid", required = true) Long problemid,
+			@Valid @RequestBody ProblemDtoForPatientSingleDto dto) throws Exception {
+		return ResponseEntity.ok(problemService.update(problemid, dto));
+	}
+
+	@DeleteMapping("/{problemid}")
+	public ResponseEntity<Boolean> deleteProblem(@PathVariable(name = "problemid", required = true) Long problemid)
+			throws Exception {
+		return ResponseEntity.ok(problemService.delete(problemid));
+	}
+
+	@GetMapping("/status")
+	public ResponseEntity<List<ProblemStatus>> getAllBookStatus() {
+		return ResponseEntity.ok(Arrays.asList(ProblemStatus.values()));
+	}
+}

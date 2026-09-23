@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: medora-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=medora
+      - POSTGRES_USER=medora
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-medora}
+    volumes:
+      - medora-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medora -d medora"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  medora-data:
