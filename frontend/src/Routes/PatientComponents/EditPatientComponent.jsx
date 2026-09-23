@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { withRouter } from '../../withRouter';
 import PatientService from '../../services/PatientService';
 import * as alertify from 'alertifyjs';
 import "alertifyjs/build/css/alertify.css";
 import DatePicker from "react-datepicker";
 
-export default class EditPatientComponent extends Component {
+class EditPatientComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -163,3 +164,5 @@ export default class EditPatientComponent extends Component {
         )
     }
 }
+
+export default withRouter(EditPatientComponent);

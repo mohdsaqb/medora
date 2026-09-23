@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from '../../withRouter';
 import PatientService from '../../services/PatientService';
 import AuthService from '../../services/AuthService';
 import * as alertify from 'alertifyjs';
@@ -178,4 +179,4 @@ class AddPatientComponent extends Component {
     }
 }
 
-export default AddPatientComponent;
+export default withRouter(AddPatientComponent);

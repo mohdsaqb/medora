@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
-import "@material/react-checkbox/dist/checkbox.css";
 import AlertifyService from '../../../services/AlertifyService';
 import PrescriptionService from '../../../services/PrescriptionService';
-import Moment from 'react-moment';
-
+import DateText from '../../../components/DateText';
 import * as alertify from 'alertifyjs';
 import "alertifyjs/build/css/alertify.css";
 import "alertifyjs/build/css/themes/default.css";
-import { withRouter } from 'react-router'; 
+import { withRouter } from '../../../withRouter';
 import PrescriptionDetailModal from '../../BasicComponent/PrescriptionDetailModal';
 
 class PrescriptionsComponent extends Component {
@@ -86,9 +84,7 @@ class PrescriptionsComponent extends Component {
                                         <td>{r.detail}</td>
                                         <td>{r.drug_detail}</td>
                                         <td>
-                                            <Moment format="YYYY/MM/DD HH:mm">
-                                                {r.delivery_date}
-                                            </Moment>
+                                            <DateText value={r.delivery_date} withTime />
                                         </td>
                                         <td>
                                             <div className="btn-group" role="group">

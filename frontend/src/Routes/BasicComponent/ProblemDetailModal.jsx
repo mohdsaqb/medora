@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import Moment from 'react-moment'
-import { withRouter } from 'react-router'
-
+import DateText from '../../components/DateText';
+import { withRouter } from '../../withRouter';
 class ProblemDetailModal extends Component {
 
     constructor(props) {
@@ -31,7 +30,7 @@ class ProblemDetailModal extends Component {
                                         <li className="list-group-item"><b>Problem Detail : </b>{this.props.problem.problemDetail}</li>
                                         <li className="list-group-item"><b>Problem Status : </b>{this.props.problem.problemStatus}</li>
                                         <li className="list-group-item"><b>Creation Date (Y/M/D H/M) : </b>
-                                            <Moment format="YYYY / MM / DD  HH:mm">{this.props.problem.creationDate}</Moment>
+                                            <DateText value={this.props.problem.creationDate} withTime />
                                         </li>
                                     </ul>
                                 </div>

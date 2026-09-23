@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import Moment from 'react-moment';
+import DateText from '../../../components/DateText';
 import * as alertify from 'alertifyjs';
 import "alertifyjs/build/css/alertify.css";
 import "alertifyjs/build/css/themes/default.css";
-import "@material/react-checkbox/dist/checkbox.css";
 import ProblemService from '../../../services/ProblemService';
 import AlertifyService from '../../../services/AlertifyService';
-import { withRouter } from 'react-router'; 
+import { withRouter } from '../../../withRouter';
 import ProblemDetailModal from '../../BasicComponent/ProblemDetailModal';
 
 let filterAllProblem = [];
@@ -115,9 +114,7 @@ class ProblemsComponent extends Component {
 
                                     <td>{problem.problemStatus}</td>
                                     <td>
-                                        <Moment format="YYYY/MM/DD HH:mm">
-                                            {problem.creationDate}
-                                        </Moment>
+                                        <DateText value={problem.creationDate} withTime />
                                     </td>
                                     <td>
                                         <div className="btn-group" role="group">

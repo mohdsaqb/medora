@@ -1,9 +1,9 @@
 import axios from 'axios';
 import AuthService from './AuthService';
 
-// Set REACT_APP_API_URL at build time to point at the deployed backend.
+// Set VITE_API_URL at build time to point at the deployed backend.
 // The fallback only suits local development.
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8185/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8185/api';
 
 const client = axios.create({ baseURL: API_BASE_URL });
 

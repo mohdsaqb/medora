@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { withRouter } from '../../withRouter';
 import PatientService from '../../services/PatientService'; 
 import PatientDetail from '../BasicComponent/PatientDetail';
 import AlertifyService from '../../services/AlertifyService';
 import ProblemsComponent from './ProblemComponent/ProblemsComponent';
  
-export default class ViewPatientComponent extends Component {
+class ViewPatientComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -98,3 +99,5 @@ export default class ViewPatientComponent extends Component {
         )
     }
 }
+
+export default withRouter(ViewPatientComponent);

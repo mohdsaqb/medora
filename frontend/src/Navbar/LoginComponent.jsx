@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import AuthService from '../services/AuthService'
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8185/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8185/api';
 
 /**
  * Sign in control for the navbar.

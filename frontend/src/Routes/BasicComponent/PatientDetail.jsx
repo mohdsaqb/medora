@@ -4,9 +4,8 @@ import "alertifyjs/build/css/themes/default.min.css";
 import "alertifyjs/build/css/themes/bootstrap.min.css";
 import "alertifyjs/build/css/alertify.min.css";
 import PatientService from '../../services/PatientService';
-import { withRouter } from 'react-router';
-import Moment from 'react-moment';
-
+import { withRouter } from '../../withRouter';
+import DateText from '../../components/DateText';
 class PatientDetail extends Component {
     constructor(props) {
         super(props)
@@ -76,7 +75,7 @@ class PatientDetail extends Component {
                         </li>
                         <li className="list-group-item"><b>Born Date : </b>
                             {this.props.bornDate !== null ?
-                                <Moment date={this.props.bornDate} format="DD MMM YYYY" /> : null
+                                <DateText value={this.props.bornDate} /> : null
                             }
                         </li>
                         <li className="list-group-item"><b>Email : </b>{this.props.email}</li>
