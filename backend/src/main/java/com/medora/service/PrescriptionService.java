@@ -30,38 +30,25 @@ public class PrescriptionService {
 		this.problemRepository = problemRepository;
 	}
 
-	public List<PrescriptionDto> getAll() throws Exception {
-		try {
-			List<Prescription> list = prescriptionRepository.findAllByStatusEquelsOne();
-			if (list.size() > 0) {
-				PrescriptionDto[] dtos = modelMapper.map(list, PrescriptionDto[].class);
-				return Arrays.asList(dtos);
-			} else {
-				logger.error("there is no any prescription");
-				throw new PatientNotFoundException("there is no any prescription");
-			}
-		} catch (Exception e) {
-			throw new Exception(e);
+	public List<PrescriptionDto> getAll() {
+		List<Prescription> list = prescriptionRepository.findAllByStatusEquelsOne();
+		// An empty collection is a valid result, not a missing resource.
+		if (list.isEmpty()) {
+			return List.of();
 		}
+		return Arrays.asList(modelMapper.map(list, PrescriptionDto[].class));
 	}
 
 	public void findByprescriptionId() {
 
 	}
 
-	public List<PrescriptionDto> findAllByProblemId(Long problemid) throws Exception {
-		try {
-			List<Prescription> list = prescriptionRepository.findAllByProblemId(problemid);
-			if (list.size() > 0) {
-				PrescriptionDto[] dtos = modelMapper.map(list, PrescriptionDto[].class);
-				return Arrays.asList(dtos);
-			} else {
-				logger.info("This problem has no any prescription");
-				throw new PatientNotFoundException("This problem has no any prescription");
-			}
-		} catch (Exception e) {
-			throw new Exception(e);
+	public List<PrescriptionDto> findAllByProblemId(Long problemid) {
+		List<Prescription> list = prescriptionRepository.findAllByProblemId(problemid);
+		if (list.isEmpty()) {
+			return List.of();
 		}
+		return Arrays.asList(modelMapper.map(list, PrescriptionDto[].class));
 	}
 
 	public PrescriptionDto save(PrescriptionDto dto) throws NotFoundException {
