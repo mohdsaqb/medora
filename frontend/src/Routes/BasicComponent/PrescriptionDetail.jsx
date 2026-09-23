@@ -3,9 +3,8 @@ import React, { Component } from 'react'
 // import "alertifyjs/build/css/themes/default.min.css";
 // import "alertifyjs/build/css/themes/bootstrap.min.css"; 
 // import "alertifyjs/build/css/alertify.min.css"; 
-import { withRouter } from 'react-router';
-import Moment from 'react-moment';
-
+import { withRouter } from '../../withRouter';
+import DateText from '../../components/DateText';
 class PrescriptionDetail extends Component {
     constructor(props) {
         super(props)
@@ -32,9 +31,7 @@ class PrescriptionDetail extends Component {
                         <li className="list-group-item"><b>Barcode : </b>{this.props.barcode}</li>
                         <li className="list-group-item"><b>Delivery Date : </b>
                             {this.props.delivery_date !== null ?
-                                <Moment format="YYYY / MM / DD  HH:mm">
-                                    {this.props.delivery_date}
-                                </Moment>
+                                <DateText value={this.props.delivery_date} withTime />
                             : null} 
                         </li> 
                     </ul>

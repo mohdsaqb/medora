@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react'
+import { withRouter } from '../../../withRouter';
 import ProblemService from '../../../services/ProblemService';
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import ReactDatePicker from 'react-datepicker';
@@ -8,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import AlertifyService from '../../../services/AlertifyService';
 //import Select from 'react-select';
 
-export default class ProblemFormComponent extends Component {
+class ProblemFormComponent extends Component {
 
     constructor(props) {
         super(props)
@@ -173,3 +174,5 @@ export default class ProblemFormComponent extends Component {
         )
     }
 }
+
+export default withRouter(ProblemFormComponent);

@@ -42,13 +42,13 @@ and what you may do depends on your role.
 | Mapping | ModelMapper |
 | Boilerplate | Lombok |
 | Build | Maven (wrapper included) |
-| Frontend | React 16, Create React App |
-| Routing | React Router 5 |
+| Frontend | React 19, Vite |
+| Routing | React Router 7 |
 | HTTP | Axios |
 | Forms | Formik |
 | Styling | Bootstrap 4 (CDN) |
 | Notifications | AlertifyJS |
-| Tests | JUnit 5, MockMvc, Spring Security Test, H2 |
+| Tests | JUnit 5, MockMvc, Spring Security Test, H2, Vitest |
 
 ## Roles
 
@@ -100,7 +100,7 @@ psql "postgresql://medora:medora@localhost:5432/medora" -f backend/seed.sql
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 
 Starts on <http://localhost:3000>. Sign in from the navbar.
@@ -123,7 +123,7 @@ without configuration and takes real values in deployment. See `.env.example`.
 | `DDL_AUTO` | `update` | Hibernate schema mode |
 | `SHOW_SQL` | `false` | Log every SQL statement |
 | `DOCKER_COMPOSE_ENABLED` | `true` | Start the database container on boot |
-| `REACT_APP_API_URL` | `http://localhost:8185/api` | Backend URL, read at build time |
+| `VITE_API_URL` | `http://localhost:8185/api` | Backend URL, read at build time |
 
 Seeding runs only when the users table is empty, so restarts never overwrite a
 changed password.
@@ -210,7 +210,7 @@ Stack traces are never returned.
 
 ```bash
 cd backend && ./mvnw verify      # 17 tests, JUnit 5 against in-memory H2
-cd frontend && CI=true npm test  # Jest
+cd frontend && npm test          # Vitest
 ```
 
 The backend suite needs no database and no Docker. It covers:
@@ -235,19 +235,15 @@ platform that assigns one.
    `DB_PASSWORD`, the three seed passwords, `ALLOWED_ORIGIN`, and
    `DOCKER_COMPOSE_ENABLED=false`.
 3. Deploy `frontend/` as a static site. Build `npm run build`, publish `build/`,
-   and set `REACT_APP_API_URL` to the backend URL including `/api`.
+   and set `VITE_API_URL` to the backend URL including `/api`.
 4. Set `ALLOWED_ORIGIN` to the frontend domain and redeploy the backend.
 
-`REACT_APP_API_URL` is baked in at build time, so changing it needs a rebuild.
+`VITE_API_URL` is baked in at build time, so changing it needs a rebuild.
 
 ## Known limitations
 
 Honest notes rather than a roadmap.
 
-- **Frontend is dated.** React 16 and Create React App are both end of life.
-  Migrating to Vite and React 19 is the largest outstanding piece of work, and
-  it has to happen in one coordinated change: React, both routers, the date
-  picker and the testing library all need major bumps together.
 - **Reads are public.** Any visitor can list patients and their diagnoses. That
   keeps a deployed demo shareable without credentials, but it is not a setting
   to carry into anything holding real records.
@@ -261,8 +257,11 @@ Honest notes rather than a roadmap.
   design, but neither is settable through any other endpoint either.
 - **Six overlapping DTOs.** Named after call sites rather than data, and worth
   consolidating.
-- **Frontend test coverage is one smoke test.** The backend is well covered; the
-  React components are not.
+- **Frontend test coverage is thin.** Two smoke tests against the app shell.
+  The backend is well covered; the React components are not.
+- **Class components throughout.** All 18 use a local `withRouter` shim to get
+  routing props, since React Router 7 removed the original. Converting them to
+  function components with hooks can happen file by file, with no deadline.
 
 ## Licence
 

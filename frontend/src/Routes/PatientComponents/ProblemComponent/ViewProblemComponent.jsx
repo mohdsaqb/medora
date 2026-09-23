@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
+import { withRouter } from '../../../withRouter';
 import ProblemService from '../../../services/ProblemService'
-//import Moment from 'react-moment';
+//import DateText from '../../../components/DateText';
 import PatientDetail from '../../BasicComponent/PatientDetail';
 import ProblemDetail from '../../BasicComponent/ProblemDetail';
-import "@material/react-checkbox/dist/checkbox.css";
 import AlertifyService from '../../../services/AlertifyService';
 import PrescriptionsComponent from "../PrescriptionComponent/PrescriptionsComponent";
 
 
 
 
-export default class ViewProblemComponent extends Component {
+class ViewProblemComponent extends Component {
 
     constructor(props) {
         super(props)
@@ -116,3 +116,5 @@ export default class ViewProblemComponent extends Component {
         )
     }
 }
+
+export default withRouter(ViewProblemComponent);

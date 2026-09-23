@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { withRouter } from '../../../withRouter';
 import DatePicker from "react-datepicker";
 import PrescriptionService from "../../../services/PrescriptionService";
 import AlertifyService from '../../../services/AlertifyService';
-export default class PrescriptionFormComponent extends Component {
+class PrescriptionFormComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -128,3 +129,5 @@ export default class PrescriptionFormComponent extends Component {
         )
     }
 }
+
+export default withRouter(PrescriptionFormComponent);

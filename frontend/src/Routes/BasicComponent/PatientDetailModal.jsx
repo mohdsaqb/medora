@@ -1,7 +1,6 @@
 import React, { Component } from 'react' 
-import { withRouter } from 'react-router';
-import Moment from 'react-moment';
-
+import { withRouter } from '../../withRouter';
+import DateText from '../../components/DateText';
 class PatientDetailModal extends Component {
     constructor(props) {
         super(props)
@@ -53,7 +52,7 @@ class PatientDetailModal extends Component {
                                         </li>
                                         <li className="list-group-item"><b>Born Date : </b>
                                             {this.props.patient.bornDate !== null ?
-                                                <Moment date={this.props.patient.bornDate} format="DD MMM YYYY" /> : null
+                                                <DateText value={this.props.patient.bornDate} /> : null
                                             }
                                         </li>
                                         <li className="list-group-item"><b>Email : </b>{this.props.patient.email}</li>

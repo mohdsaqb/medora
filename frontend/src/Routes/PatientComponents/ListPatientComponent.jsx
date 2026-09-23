@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
+import { withRouter } from '../../withRouter';
 import PatientService from '../../services/PatientService';
-import "@material/react-checkbox/dist/checkbox.css";
-import Checkbox from '@material/react-checkbox';
 import "alertifyjs/build/css/themes/default.min.css";
 import "alertifyjs/build/css/themes/bootstrap.min.css";
 import "alertifyjs/build/css/alertify.min.css";
 import "../../Assets/css/ListPatientComponent.css"
 import * as alertify from 'alertifyjs';
 
-import Moment from 'react-moment';
+import DateText from '../../components/DateText';
 import PatientDetailModal from '../BasicComponent/PatientDetailModal';
 import AuthService from '../../services/AuthService';
 
@@ -113,12 +112,13 @@ class ListPatientComponent extends Component {
     createCheckboxes = () => (items.map((item) => this.createCheckbox(item)))
     createCheckbox = label => (
         <div className="float-left" style={{ margin: "0 25px 0 0" }} key={label} >
-            <Checkbox
-                nativeControlId='my-checkbox'
+            <input
+                type="checkbox"
+                id={`filter-${label}`}
                 checked={checked[label]}
                 onChange={(e) => { this.changeStateForChecked(e, label); }}
             />
-            <label className="checkbox-label" ><b>{label}</b></label>
+            <label className="checkbox-label" htmlFor={`filter-${label}`}><b> {label}</b></label>
         </div>
     )
     changeStateForChecked = (e, label) => {
@@ -176,9 +176,7 @@ class ListPatientComponent extends Component {
                                         <td>{patient.email}</td>
                                         <td>
                                             {patient.bornDate !== null ?
-                                                <Moment format="YYYY/MM/DD HH:mm">
-                                                    {patient.bornDate}
-                                                </Moment>
+                                                <DateText value={patient.bornDate} withTime />
                                                 : null}
                                         </td>
                                         <td>{patient.city}</td>
@@ -231,4 +229,4 @@ class ListPatientComponent extends Component {
 
 }
 
-export default ListPatientComponent;
+export default withRouter(ListPatientComponent);
