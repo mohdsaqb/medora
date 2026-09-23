@@ -201,7 +201,7 @@ show something useful.
 | `400` | Required fields missing. The message names them. |
 | `401` | Not signed in, on an endpoint that needs an account |
 | `403` | Signed in, but the role is not allowed |
-| `404` | No matching record |
+| `404` | No matching record. Collection endpoints return `[]` instead. |
 | `409` | Conflicts with an existing record, such as a duplicate email |
 
 Stack traces are never returned.
@@ -209,7 +209,7 @@ Stack traces are never returned.
 ## Tests
 
 ```bash
-cd backend && ./mvnw verify      # 16 tests, JUnit 5 against in-memory H2
+cd backend && ./mvnw verify      # 17 tests, JUnit 5 against in-memory H2
 cd frontend && npm test          # Vitest
 ```
 
@@ -253,8 +253,6 @@ Honest notes rather than a roadmap.
 - **No patient logins.** All three roles are staff. Patient accounts need
   per-row ownership checks rather than endpoint rules, which is a larger change.
 - **List endpoints are unbounded.** No pagination yet.
-- **Empty results return 404.** `findAll` treats an empty list as not found
-  rather than returning `[]`.
 - **`ProblemService.update` ignores the soft delete flag and creation date** by
   design, but neither is settable through any other endpoint either.
 - **Six overlapping DTOs.** Named after call sites rather than data, and worth
