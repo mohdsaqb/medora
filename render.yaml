@@ -1,0 +1,37 @@
+# Render blueprint for the backend.
+#
+# The database is expected to be an external managed Postgres (Neon or
+# similar). Set DB_URL, DB_USERNAME and DB_PASSWORD in the dashboard, along
+# with the seed passwords, which are marked sync:false so they are never
+# committed here.
+services:
+  - type: web
+    name: medora-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /api/patient
+    envVars:
+      # No Docker daemon inside the container, so the Compose integration
+      # used for local development must stay off.
+      - key: DOCKER_COMPOSE_ENABLED
+        value: "false"
+      - key: DDL_AUTO
+        value: update
+      - key: SHOW_SQL
+        value: "false"
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: ALLOWED_ORIGIN
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DOCTOR_PASSWORD
+        sync: false
+      - key: RECEPTIONIST_PASSWORD
+        sync: false

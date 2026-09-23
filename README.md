@@ -231,12 +231,17 @@ runs on a JRE as a non root user. It reads `PORT` at runtime, so it works on any
 platform that assigns one.
 
 1. Create a PostgreSQL database and copy its connection details.
-2. Deploy `backend/` as a Docker service. Set `DB_URL`, `DB_USERNAME`,
-   `DB_PASSWORD`, the three seed passwords, `ALLOWED_ORIGIN`, and
-   `DOCKER_COMPOSE_ENABLED=false`.
-3. Deploy `frontend/` as a static site. Build `npm run build`, publish `build/`,
-   and set `VITE_API_URL` to the backend URL including `/api`.
+2. Deploy `backend/` as a Docker service. `render.yaml` declares the service and
+   lists the variables to set: `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, the three
+   seed passwords and `ALLOWED_ORIGIN`. None of them are committed.
+3. Deploy `frontend/` as a static site. `frontend/vercel.json` sets the build
+   command, the `build` output directory and the SPA rewrite. Set `VITE_API_URL`
+   to the backend URL including `/api`.
 4. Set `ALLOWED_ORIGIN` to the frontend domain and redeploy the backend.
+5. Seed demo data once the schema exists: `psql "$DB_URL" -f backend/seed.sql`.
+
+The SPA rewrite matters. Routing is client side, so without it a refresh on
+`/patients`, or any shared `/view-patient/:id` link, returns 404.
 
 `VITE_API_URL` is baked in at build time, so changing it needs a rebuild.
 
