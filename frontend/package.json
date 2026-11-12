@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "alertifyjs": "^1.14.0",
-    "axios": "^1.8.4",
+    "axios": "^1.21.1",
     "formik": "^2.4.6",
     "react": "^19.0.0",
     "react-datepicker": "^8.0.0",
